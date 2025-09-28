@@ -1,0 +1,44 @@
+﻿@page "/pruebas"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Forms
+@inject Servicios.IRepos.IPruebaServicios Servicio
+
+<h3>Demo 5 Capas – Prueba</h3>
+
+<div class="mb-2">
+    <InputText @bind-Value="nombre" class="form-control" placeholder="Nombre..." />
+</div>
+
+<button class="btn btn-primary" @onclick="Crear">Agregar</button>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <p style="color:red">@error</p>
+}
+
+<ul>
+    @foreach (var p in lista)
+    {
+        <li>#@p.Id - @p.Nombre</li>
+    }
+</ul>
+
+@code {
+    List<Entidades.DTO.PruebaDTO> lista = [];
+    string nombre = "";
+    string? error;
+
+    protected override async Task OnInitializedAsync() => await Cargar();
+
+    async Task Cargar() => lista = await Servicio.ListarAsync();
+
+    async Task Crear()
+    {
+        error = null;
+        var (ok, err, dto) = await Servicio.CrearAsync(nombre);
+        if (!ok) { error = err ?? "No se pudo crear."; return; }
+
+        nombre = "";
+        await Cargar();
+    }
+}

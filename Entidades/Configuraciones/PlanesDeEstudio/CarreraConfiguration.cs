@@ -1,0 +1,34 @@
+﻿/*
+    Aqui haremos la configuracion de la entidad E_Carrera con Fluent API y EF Core
+*/
+
+using Entidades.Modelos.PlanesDeEstudio.Carreras;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Entidades.Configuraciones.PlanesDeEstudio;
+
+public class CarreraConfiguration : IEntityTypeConfiguration<E_Carrera>
+{
+    public void Configure(EntityTypeBuilder<E_Carrera> builder)
+    {
+        // Configuracion para el esquema CEF de la base de datos
+        builder.ToTable("Carreras", "CEF");
+
+        // Llave primaria y AutoIncremento
+        builder.HasKey(c => c.IdCarrera);
+        builder.Property(c => c.IdCarrera).ValueGeneratedOnAdd();
+
+        // Configurar propiedades requeridas y longitudes
+        builder.Property(c => c.ClaveCarrera).IsRequired().HasMaxLength(3).HasColumnType("char(3)").IsFixedLength();
+        builder.HasIndex(c => c.ClaveCarrera).IsUnique().HasDatabaseName("UK_Carreras_Clave");
+
+        builder.Property(c => c.NombreCarrera).IsRequired().HasMaxLength(50);
+        builder.HasIndex(c => c.NombreCarrera).IsUnique().HasDatabaseName("UK_Carreras_Nombre");
+
+        builder.Property(c => c.AliasCarrera).IsRequired().HasMaxLength(50);
+        builder.HasIndex(c => c.AliasCarrera).IsUnique().HasDatabaseName("UK_Carreras_Alias");
+
+        builder.Property(c => c.EstadoCarrera).IsRequired().HasDefaultValue(true);
+    }
+}
