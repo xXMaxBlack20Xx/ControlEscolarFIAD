@@ -4,6 +4,7 @@ using Datos.IRepositorios;
 using Datos.Repositorios;
 using Entidades.PerfilesDTO;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Negocios;
 using Servicios.IRepositorios;
 using Servicios.Repositorios;
@@ -25,13 +26,16 @@ namespace CEF_Trigo
             builder.Services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<PruebaProfile>();
+                cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.CarreraProfile>();
             });
-
 
             // Agregar el repositorio al contenedor de servicios
             builder.Services.AddScoped<IPruebaRepo, PruebaRepo>();
             builder.Services.AddScoped<PruebaNegocios>();
             builder.Services.AddScoped<IPruebaServicios, PruebaServicios>();
+            builder.Services.AddScoped<Negocios.Repositorios.PlanesDeEstudio.CarreraNegocios>();
+            builder.Services.AddScoped<Servicios.IRepositorios.PlanesDeEstudio.ICarreraServicios, Servicios.Repositorios.PlanesDeEstudio.CarreraServicios>();
+            builder.Services.AddScoped<Datos.IRepositorios.PlanesDeEstudio.ICarreraRepositorios, Datos.Repositorios.PlanesDeEstudio.CarreraRepositorio>();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()

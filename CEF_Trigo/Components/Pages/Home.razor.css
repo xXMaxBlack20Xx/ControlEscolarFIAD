@@ -1,0 +1,130 @@
+﻿/* 1. Variables de color*/
+:root {
+    --uabc-oro: #BFA15A;
+    --uabc-verde: #006225;
+    --uabc-verde-oscuro: #004a1d;
+    --light-gray: #f8f9fa;
+    --text-muted: #6c757d;
+}
+
+/* Estilos del Header y Banner */
+.main-header {
+    position: relative;
+    color: white;
+    padding-bottom: 2rem;
+    background: var(--uabc-verde);
+}
+
+.banner-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://capitaltecnologica.com/wp-content/uploads/2020/09/Uabc-ensenada-1536x452.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+}
+
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(0, 98, 37, 0.85), rgba(0, 74, 29, 0.95));
+    z-index: 2;
+}
+
+.main-header .navbar, .header-content {
+    position: relative;
+    z-index: 3;
+}
+
+.navbar {
+    background: transparent !important;
+}
+
+.brand-title {
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.brand-subtitle {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    line-height: 1;
+}
+
+.nav-link {
+    font-weight: 500;
+    padding: 0.8rem 1rem !important;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+    .nav-link:hover, .nav-link.active {
+        color: #BFA15A !important;
+        border-bottom-color: #BFA15A;
+    }
+
+/* Estilos de las tarjetas de Módulo de Gestión */
+.gestion-card {
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+    .gestion-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .gestion-card .icon-circle {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto;
+        background: linear-gradient(135deg, #006225, #004a1d);
+        color: #BFA15A;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .gestion-card:hover .icon-circle {
+        background: linear-gradient(135deg, #BFA15A, #d4b670);
+        color: #006225;
+    }
+
+.card-footer {
+    background-color: transparent;
+    border-top: none;
+    padding: 1.25rem;
+}
+
+.btn-primary {
+    background-color: #006225;
+    border-color: #006225;
+    font-weight: 500;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+    .btn-primary:hover {
+        background-color: #004a1d;
+        border-color: #004a1d;
+        transform: scale(1.05);
+    }
+
+/* Footer */
+.footer {
+    background-color: #0a582f;
+    color: rgba(255, 255, 255, 1);
+}

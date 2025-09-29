@@ -22,7 +22,7 @@ public class CarreraDTO
 
     [Required(ErrorMessage = "Debe especificar el coordinador.")]
     [Range(1, int.MaxValue, ErrorMessage = "El Id de coordinador debe ser un entero positivo.")]
-    public int IdCoordinador { get; set; }
+    public int? IdCoordinador { get; set; }
 
     public bool EstadoCarrera { get; set; } = true;
 }

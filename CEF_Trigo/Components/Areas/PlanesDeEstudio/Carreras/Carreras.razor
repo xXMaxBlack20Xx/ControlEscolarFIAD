@@ -1,0 +1,261 @@
+﻿@page "/carreras"
+@rendermode InteractiveServer
+
+@using Entidades.DTO.PlanesDeEstudio.Carreras
+@using Entidades.Generales
+@using Servicios.IRepositorios.PlanesDeEstudio
+
+@inject ICarreraServicios CarreraServicios
+
+<div class="container-fluid mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- SECCIÓN IZQUIERDA: BOTÓN DE VOLVER Y TÍTULO -->
+                <div class="d-flex align-items-center gap-3">
+                    <a href="/" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-left-circle me-1"></i>
+                        Volver al Inicio
+                    </a>
+                    <h3 class="mb-0"><i class="bi bi-journals me-2"></i>Gestión de Carreras</h3>
+                </div>
+                <!-- SECCIÓN DERECHA: BOTÓN DE NUEVA CARRERA -->
+                <button class="btn btn-primary" @onclick="AbrirModalNuevo">
+                    <i class="bi bi-plus-circle-fill me-2"></i>
+                    Nueva Carrera
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Barra de Búsqueda -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Buscar por clave, nombre o alias..."
+                               @bind="criterioBusqueda" @bind:event="oninput" @onkeyup="Buscar" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Carreras -->
+            @if (carreras == null)
+            {
+                <div class="text-center"><p>Cargando carreras...</p></div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Clave</th>
+                                <th>Nombre</th>
+                                <th class="text-center">ID Coord.</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var carrera in carreras)
+                            {
+                                <tr>
+                                    <td>@carrera.ClaveCarrera</td>
+                                    <td>@carrera.NombreCarrera</td>
+                                    <td class="text-center">@(carrera.IdCoordinador?.ToString() ?? "N/A")</td>
+                                    <td class="text-center">
+                                        <span class="badge @(carrera.EstadoCarrera ? "bg-success" : "bg-danger")">
+                                            @(carrera.EstadoCarrera ? "Activa" : "Inactiva")
+                                        </span>
+                                    </td>
+                                    <td class="text-center actions-column">
+                                        <button class="btn btn-sm btn-outline-primary" @onclick="() => AbrirModalEditar(carrera)">
+                                            <i class="bi bi-pencil-square"></i> Editar
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" @onclick="() => AbrirModalConfirmacion(carrera)">
+                                            <i class="bi bi-trash3"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modales -->
+@if (mostrandoModal)
+{
+    <div class="modal fade show" tabindex="-1" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@tituloModal</h5>
+                    <button type="button" class="btn-close" @onclick="CerrarModal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="clave" class="form-label">Clave</label>
+                            <input id="clave" class="form-control" @bind="carreraSeleccionada.ClaveCarrera" maxlength="3" />
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input id="nombre" class="form-control" @bind="carreraSeleccionada.NombreCarrera" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="alias" class="form-label">Alias</label>
+                        <input id="alias" class="form-control" @bind="carreraSeleccionada.AliasCarrera" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="coordinador" class="form-label">ID del Coordinador (Opcional)</label>
+                        <input type="number" id="coordinador" class="form-control" @bind="carreraSeleccionada.IdCoordinador" />
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="estadoSwitch" @bind="carreraSeleccionada.EstadoCarrera">
+                        <label class="form-check-label" for="estadoSwitch">Carrera Activa</label>
+                    </div>
+
+                    @if (errores.Any())
+                    {
+                        <div class="alert alert-danger">
+                            @foreach (var error in errores)
+                            {
+                                <p class="mb-0">@error</p>
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CerrarModal">Cancelar</button>
+                    <button type="button" class="btn btn-success" @onclick="GuardarCambios">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@if (mostrandoModalConfirmacion)
+{
+    <div class="modal fade show" tabindex="-1" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" @onclick="CerrarModalConfirmacion"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro de que desea eliminar la carrera: <strong>@carreraSeleccionada.NombreCarrera</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CerrarModalConfirmacion">Cancelar</button>
+                    <button type="button" class="btn btn-danger" @onclick="ConfirmarBorrado">Sí, Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+<!-- LÍNEA AÑADIDA PARA CARGAR LOS ICONOS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+@code {
+    private List<CarreraDTO>? carreras;
+    private string criterioBusqueda = string.Empty;
+    private CarreraDTO carreraSeleccionada = new();
+
+    private bool mostrandoModal = false;
+    private bool mostrandoModalConfirmacion = false;
+    private string tituloModal = string.Empty;
+    private List<string> errores = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarCarreras();
+    }
+
+    private async Task CargarCarreras()
+    {
+        carreras = (await CarreraServicios.ListarCarreras(criterioBusqueda)).ToList();
+    }
+
+    private async Task Buscar() => await CargarCarreras();
+
+    private void AbrirModalNuevo()
+    {
+        tituloModal = "Nueva Carrera";
+        carreraSeleccionada = new CarreraDTO { EstadoCarrera = true };
+        errores.Clear();
+        mostrandoModal = true;
+    }
+
+    private void AbrirModalEditar(CarreraDTO carrera)
+    {
+        tituloModal = "Editar Carrera";
+        carreraSeleccionada = new CarreraDTO
+        {
+            IdCarrera = carrera.IdCarrera,
+            ClaveCarrera = carrera.ClaveCarrera,
+            NombreCarrera = carrera.NombreCarrera,
+            AliasCarrera = carrera.AliasCarrera,
+            EstadoCarrera = carrera.EstadoCarrera,
+            IdCoordinador = carrera.IdCoordinador
+        };
+        errores.Clear();
+        mostrandoModal = true;
+    }
+
+    private void CerrarModal() => mostrandoModal = false;
+
+    private async Task GuardarCambios()
+    {
+        if (carreraSeleccionada.IdCoordinador == 0)
+        {
+            carreraSeleccionada.IdCoordinador = null;
+        }
+
+        errores.Clear();
+        var resultado = carreraSeleccionada.IdCarrera == 0
+            ? await CarreraServicios.InsertarCarrera(carreraSeleccionada)
+            : await CarreraServicios.ModificarCarrera(carreraSeleccionada);
+
+        if (resultado.Resultado)
+        {
+            CerrarModal();
+            await CargarCarreras();
+        }
+        else
+        {
+            errores = resultado.Mensajes;
+        }
+    }
+
+    private void AbrirModalConfirmacion(CarreraDTO carrera)
+    {
+        carreraSeleccionada = carrera;
+        mostrandoModalConfirmacion = true;
+    }
+
+    private void CerrarModalConfirmacion() => mostrandoModalConfirmacion = false;
+
+    private async Task ConfirmarBorrado()
+    {
+        var resultado = await CarreraServicios.BorrarCarrera(carreraSeleccionada.IdCarrera);
+        CerrarModalConfirmacion();
+        if (resultado.Resultado)
+        {
+            await CargarCarreras();
+        }
+        else
+        {
+            Console.WriteLine(string.Join(", ", resultado.Mensajes));
+        }
+    }
+}
+

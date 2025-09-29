@@ -32,6 +32,7 @@ public class CarreraProfile : Profile
 
         // Entidad -> DTO
         CreateMap<E_Carrera, CarreraDTO>()
+            .ReverseMap()
             .AfterMap((s, d) =>
              {
                  d.ClaveCarrera = (s.ClaveCarrera ?? "").Trim().ToUpperInvariant();

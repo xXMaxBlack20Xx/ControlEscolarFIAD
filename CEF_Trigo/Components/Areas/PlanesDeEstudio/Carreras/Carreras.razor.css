@@ -1,0 +1,39 @@
+﻿/* Estilos para el contenedor principal y la tarjeta */
+.card-header h3 {
+    color: var(--uabc-verde, #006225);
+}
+
+.btn-primary {
+    background-color: var(--uabc-verde, #006225);
+    border-color: var(--uabc-verde, #006225);
+}
+
+    .btn-primary:hover {
+        background-color: var(--uabc-verde-oscuro, #004a1d);
+        border-color: var(--uabc-verde-oscuro, #004a1d);
+    }
+
+/* Estilos para la tabla */
+.table thead {
+    background-color: var(--uabc-verde-oscuro, #004a1d) !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #e9f5ee;
+    cursor: pointer;
+}
+
+/* Columna de acciones para asegurar el espaciado */
+.actions-column .btn {
+    margin: 0 0.25rem;
+}
+
+/* Estilos para los Modales */
+.modal-header {
+    background-color: var(--uabc-verde, #006225);
+    color: white;
+}
+
+    .modal-header .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
