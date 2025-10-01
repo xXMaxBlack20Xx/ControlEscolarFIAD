@@ -63,11 +63,12 @@ public class CarreraRepositorio(ContextDB db) : ICarreraRepositorios
                 res.Mensajes.Add("La clave de la carrera no debe exceder 3 caracteres.");
                 res.Resultado = false;
             }
-            if (await ExisteClaveCarrera(carrera.ClaveCarrera, excluirId))
-            {
-                res.Mensajes.Add("La clave de la carrera ya existe.");
-                res.Resultado = false;
-            }
+            // Repito cambie mi opinión sobre esta validación
+            //if (await ExisteClaveCarrera(carrera.ClaveCarrera, excluirId))
+            //{
+            //    res.Mensajes.Add("La clave de la carrera ya existe.");
+            //    res.Resultado = false;
+            //}
         }
 
         // Nombre (max 50)
@@ -251,4 +252,11 @@ public class CarreraRepositorio(ContextDB db) : ICarreraRepositorios
 
     public async Task<bool> ExisteAliasCarrera(string alias)
         => await ExisteAliasCarrera(alias, excluirId: null);
+
+    async Task<E_Carrera?> ICarreraRepositorios.BuscarCarreraConCoordinador(int idCarrera)
+    {
+        return await db.Carreras
+                   .Include(c => c.Coordinador)
+                   .FirstOrDefaultAsync(c => c.IdCarrera == idCarrera);
+    }
 }

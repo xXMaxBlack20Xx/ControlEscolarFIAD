@@ -25,20 +25,26 @@ public class CarreraProfile : Profile
 {
     public CarreraProfile()
     {
-        // DTO -> Entidad
-        CreateMap<CarreraDTO, E_Carrera>()
-            .ForMember(dest => dest.IdCarrera, opt => opt.Ignore())
-            .ForMember(dest => dest.PlanEstudios, opt => opt.Ignore());
-
-        // Entidad -> DTO
+        // Define el mapeo en ambos sentidos (Entidad <--> DTO)
         CreateMap<E_Carrera, CarreraDTO>()
-            .ReverseMap()
-            .AfterMap((s, d) =>
-             {
-                 d.ClaveCarrera = (s.ClaveCarrera ?? "").Trim().ToUpperInvariant();
-                 d.NombreCarrera = (s.NombreCarrera ?? "").Trim();
-                 d.AliasCarrera = (s.AliasCarrera ?? "").Trim();
-             });
-        
+            // Mapeo especial para obtener el nombre del coordinador
+            .ForMember(
+                dest => dest.NombreCoordinador,
+                opt => opt.MapFrom(src => src.Coordinador != null
+                    ? $"{src.Coordinador.NombreDocente} {src.Coordinador.PaternoDocente} {src.Coordinador.MaternoDocente}".Trim()
+                    : "No asignado")
+            )
+            .ReverseMap() // Habilita el mapeo de DTO a Entidad
+            .ForMember(dest => dest.IdCarrera, opt => opt.Ignore()) // Ignora el ID al crear/actualizar
+            .ForMember(dest => dest.Coordinador, opt => opt.Ignore()) // Ignora el objeto de navegación
+            .ForMember(dest => dest.PlanEstudios, opt => opt.Ignore()) // Ignora la colección de navegación
+
+            // Sanitización de datos al mapear de DTO a Entidad
+            .AfterMap((src, dest) =>
+            {
+                dest.ClaveCarrera = (src.ClaveCarrera ?? "").Trim().ToUpperInvariant();
+                dest.NombreCarrera = (src.NombreCarrera ?? "").Trim();
+                dest.AliasCarrera = (src.AliasCarrera ?? "").Trim();
+            });
     }
 }

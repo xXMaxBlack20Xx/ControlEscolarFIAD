@@ -4,6 +4,7 @@ using Datos.Contexto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Datos.Migrations
 {
     [DbContext(typeof(ContextDB))]
-    partial class ContextDBModelSnapshot : ModelSnapshot
+    [Migration("20250929173458_AddDocentesAndCoordinatorRelationship")]
+    partial class AddDocentesAndCoordinatorRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,24 +122,6 @@ namespace Datos.Migrations
                     b.ToTable("Docentes");
                 });
 
-            modelBuilder.Entity("Entidades.Modelos.PlanesDeEstudio.Carreras.E_NivelAcademico", b =>
-                {
-                    b.Property<int>("IdNivelAcademico")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdNivelAcademico"));
-
-                    b.Property<string>("NombreNivelAcademico")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.HasKey("IdNivelAcademico");
-
-                    b.ToTable("NivelesAcademicos");
-                });
-
             modelBuilder.Entity("Entidades.Modelos.PlanesDeEstudio.Carreras.E_PlanEstudio", b =>
                 {
                     b.Property<int>("IdPlanEstudio")
@@ -195,8 +180,6 @@ namespace Datos.Migrations
 
                     b.HasIndex("IdCarrera");
 
-                    b.HasIndex("IdNivelAcademico");
-
                     b.ToTable("PlanEstudios");
                 });
 
@@ -219,15 +202,7 @@ namespace Datos.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Entidades.Modelos.PlanesDeEstudio.Carreras.E_NivelAcademico", "NivelAcademico")
-                        .WithMany("PlanesEstudio")
-                        .HasForeignKey("IdNivelAcademico")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Carrera");
-
-                    b.Navigation("NivelAcademico");
                 });
 
             modelBuilder.Entity("Entidades.Modelos.PlanesDeEstudio.Carreras.E_Carrera", b =>
@@ -238,11 +213,6 @@ namespace Datos.Migrations
             modelBuilder.Entity("Entidades.Modelos.PlanesDeEstudio.Carreras.E_Docentes", b =>
                 {
                     b.Navigation("CarrerasCoordinadas");
-                });
-
-            modelBuilder.Entity("Entidades.Modelos.PlanesDeEstudio.Carreras.E_NivelAcademico", b =>
-                {
-                    b.Navigation("PlanesEstudio");
                 });
 #pragma warning restore 612, 618
         }

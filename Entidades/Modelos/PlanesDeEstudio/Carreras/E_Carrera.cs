@@ -5,6 +5,7 @@
 */
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entidades.Modelos.PlanesDeEstudio.Carreras;
 
@@ -31,6 +32,9 @@ public class E_Carrera
     [Required]
     public bool EstadoCarrera { get; set; } = true;
 
+    [ForeignKey(nameof(IdCoordinador))]
+    public E_Docentes? Coordinador { get; set; }
+  
     // Navigation
     public ICollection<E_PlanEstudio> PlanEstudios { get; set; } = new List<E_PlanEstudio>();
 }

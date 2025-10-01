@@ -50,5 +50,11 @@ public class PlanEstudioConfiguration : IEntityTypeConfiguration<E_PlanEstudio>
         builder.HasIndex(pe => new { pe.IdCarrera, pe.PlanEstudio })
                .IsUnique()
                .HasDatabaseName("UK_PlanesEstudio_IdCarrera_Plan");
+
+        // Plan de Estudios tiene un Nivel Academico, relacion (1 Nivel : N Planes)
+        builder.HasOne(pe => pe.NivelAcademico)
+               .WithMany(na => na.PlanesEstudio)
+               .HasForeignKey(pe => pe.IdNivelAcademico)
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }

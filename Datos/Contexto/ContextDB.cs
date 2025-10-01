@@ -1,5 +1,4 @@
-﻿using Entidades.Configuraciones.PlanesDeEstudio;
-using Entidades.Modelos;
+﻿using Entidades.Modelos;
 using Entidades.Modelos.PlanesDeEstudio.Carreras;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,17 +13,13 @@ public class ContextDB(DbContextOptions<ContextDB> opt) : DbContext(opt)
 
     public DbSet<E_PlanEstudio> PlanEstudios => Set<E_PlanEstudio>();
 
+    public DbSet<E_Docentes> Docentes => Set<E_Docentes>();
+
+    public DbSet<E_NivelAcademico> NivelesAcademicos => Set<E_NivelAcademico>();
+
     protected override void OnModelCreating(ModelBuilder mb)
     {
-        mb.Entity<E_Prueba>(e =>
-        {
-            e.HasKey(x => x.Id);
-            e.Property(x => x.Nombre).IsRequired().HasMaxLength(80);
-        });
-        
-        mb.ApplyConfiguration(new CarreraConfiguration());
-        mb.ApplyConfiguration(new PlanEstudioConfiguration());
-
         base.OnModelCreating(mb);
+        mb.ApplyConfigurationsFromAssembly(typeof(ContextDB).Assembly);
     }
 }

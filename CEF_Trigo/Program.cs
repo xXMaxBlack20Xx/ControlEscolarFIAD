@@ -1,10 +1,11 @@
 using CEF_Trigo.Components;
 using Datos.Contexto;
 using Datos.IRepositorios;
+using Datos.IRepositorios.PlanesDeEstudio;
 using Datos.Repositorios;
+using Datos.Repositorios.PlanesDeEstudio;
 using Entidades.PerfilesDTO;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Negocios;
 using Servicios.IRepositorios;
 using Servicios.Repositorios;
@@ -27,15 +28,23 @@ namespace CEF_Trigo
             {
                 cfg.AddProfile<PruebaProfile>();
                 cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.CarreraProfile>();
+                cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.PlanEstudiosProfile>();
+                cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.DocenteProfile>();
+                cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.NivelAcademicoProfile>();
             });
 
             // Agregar el repositorio al contenedor de servicios
             builder.Services.AddScoped<IPruebaRepo, PruebaRepo>();
             builder.Services.AddScoped<PruebaNegocios>();
             builder.Services.AddScoped<IPruebaServicios, PruebaServicios>();
+
             builder.Services.AddScoped<Negocios.Repositorios.PlanesDeEstudio.CarreraNegocios>();
             builder.Services.AddScoped<Servicios.IRepositorios.PlanesDeEstudio.ICarreraServicios, Servicios.Repositorios.PlanesDeEstudio.CarreraServicios>();
             builder.Services.AddScoped<Datos.IRepositorios.PlanesDeEstudio.ICarreraRepositorios, Datos.Repositorios.PlanesDeEstudio.CarreraRepositorio>();
+
+            builder.Services.AddScoped<IPlanDeEstudioRepositorio, PlanEstudioRepositorio>();
+            builder.Services.AddScoped<Negocios.Repositorios.PlanesDeEstudio.PlanEstudioNegocios>();
+            builder.Services.AddScoped<Servicios.IRepositorios.PlanesDeEstudio.IPlanEstudioServicios, Servicios.Repositorios.PlanesDeEstudio.PlanEstudioServicios>();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()

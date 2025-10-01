@@ -10,13 +10,20 @@ public class PlanEstudiosProfile : Profile
     {
         // ENTIDAD -> DTO
         CreateMap<E_PlanEstudio, PlanEstudioDTO>()
-            .ForMember(d => d.FechaCreacion, o => o.MapFrom(s => (DateTime?)s.FechaCreacion))
+            .ForMember(dto => dto.FechaCreacion, opt => opt.MapFrom(s => (DateTime?)s.FechaCreacion))
             // NO mapear CarreraNombre porque no existe en el DTO
-            .ForMember(d => d.IdCarrera, o => o.MapFrom(s => s.IdCarrera));
+            .ForMember(dto => dto.IdCarrera, o => o.MapFrom(s => s.IdCarrera));
 
         // DTO -> ENTIDAD
         CreateMap<PlanEstudioDTO, E_PlanEstudio>()
             .ForMember(e => e.Carrera, o => o.Ignore()) // evitar inserts accidentales
             .ForMember(e => e.FechaCreacion, o => o.MapFrom(d => d.FechaCreacion ?? DateTime.UtcNow));
+
+        // Mapeo de DTO Entidad
+        CreateMap<PlanEstudioDTO, E_PlanEstudio>()
+            .ForMember(entidad => entidad.Carrera, opt => opt.Ignore())
+            .ForMember(entidad => entidad.NivelAcademico, opt => opt.Ignore())
+            .ForMember(entidad => entidad.FechaCreacion, 
+                opt => opt.MapFrom(dto => dto.FechaCreacion ?? DateTime.UtcNow));
     }
 }

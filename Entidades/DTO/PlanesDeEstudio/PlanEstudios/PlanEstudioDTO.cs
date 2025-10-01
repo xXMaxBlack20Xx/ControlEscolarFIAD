@@ -11,6 +11,19 @@ public class PlanEstudioDTO : IValidatableObject
 {
     public int IdPlanEstudio { get; set; }
 
+    // --- SECCIÓN DE LLAVES FORÁNEAS Y NOMBRES PARA VISUALIZACIÓN ---
+    [Required(ErrorMessage = "Seleccione una carrera.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Seleccione una carrera válida.")]
+    public int IdCarrera { get; set; }
+
+    [Required(ErrorMessage = "Seleccione un nivel académico.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Seleccione un nivel académico válido.")]
+    public int IdNivelAcademico { get; set; }
+
+    // Propiedades adicionales para mostrar en la UI, se llenan con AutoMapper.
+    public string? NombreCarrera { get; set; }
+    public string? NombreNivelAcademico { get; set; }
+
     [Required(ErrorMessage = "Debe capturar el plan de estudios.")]
     [RegularExpression(@"^\d{4}-[124]$", ErrorMessage = "El formato debe ser AAAA-D, donde AAAA es un año y D es 1, 2 o 4.")]
     public string PlanEstudio { get; set; } = string.Empty;
@@ -49,18 +62,13 @@ public class PlanEstudioDTO : IValidatableObject
     [Required(ErrorMessage = "Debe indicar el estado del plan de estudios.")]
     public bool EstadoPlanEstudio { get; set; } = true;
 
-    // FK (sin [ForeignKey] en DTO)
-    [Required(ErrorMessage = "Seleccione una carrera.")]
-    [Range(1, int.MaxValue, ErrorMessage = "Seleccione una carrera válida.")]
-    public int IdCarrera { get; set; }
-
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (CreditosOptativos + CreditosObligatorios != TotalCreditos)
         {
             yield return new ValidationResult(
                 "La suma de créditos optativos y obligatorios debe ser igual al total de créditos.",
-                new[] { nameof(CreditosOptativos), nameof(CreditosObligatorios), nameof(TotalCreditos) }
+                [nameof(CreditosOptativos), nameof(CreditosObligatorios), nameof(TotalCreditos)]
             );
         }
     }

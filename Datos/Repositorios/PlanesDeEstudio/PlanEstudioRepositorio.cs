@@ -32,15 +32,9 @@ public class PlanEstudioRepositorio(ContextDB db) : IPlanDeEstudioRepositorio
 
         int? excluirId = esUpdate ? plan.IdPlanEstudio : null;
 
-        // Clave de plan (formato ya se valida en DTO, aquí solo longitud/duplicado)
         if (string.IsNullOrWhiteSpace(plan.PlanEstudio))
         {
             res.Mensajes.Add("El plan de estudio es obligatorio.");
-            res.Resultado = false;
-        }
-        else if (plan.PlanEstudio.Length > 6)
-        {
-            res.Mensajes.Add("El plan de estudio no debe exceder 6 caracteres.");
             res.Resultado = false;
         }
         else if (await ExistePlanEstudioInterno(plan.PlanEstudio, plan.IdCarrera, excluirId))
@@ -49,7 +43,13 @@ public class PlanEstudioRepositorio(ContextDB db) : IPlanDeEstudioRepositorio
             res.Resultado = false;
         }
 
-        // Total de créditos coherente
+        // --> CAMBIO: Validar que el Nivel Académico sea válido
+        if (plan.IdNivelAcademico <= 0)
+        {
+            res.Mensajes.Add("Debe seleccionar un nivel académico válido.");
+            res.Resultado = false;
+        }
+
         if (plan.TotalCreditos != plan.CreditosOptativos + plan.CreditosObligatorios)
         {
             res.Mensajes.Add("La suma de créditos optativos y obligatorios debe coincidir con el total de créditos.");
@@ -112,6 +112,7 @@ public class PlanEstudioRepositorio(ContextDB db) : IPlanDeEstudioRepositorio
             existente.Comentarios = planDeEstudio.Comentarios?.Trim() ?? string.Empty;
             existente.EstadoPlanEstudio = planDeEstudio.EstadoPlanEstudio;
             existente.IdCarrera = planDeEstudio.IdCarrera;
+            existente.IdNivelAcademico = planDeEstudio.IdNivelAcademico; // --> CAMBIO: Actualizar el IdNivelAcademico
 
             var res = await ValidarPlan(existente, esUpdate: true);
             if (!res.Resultado) return res;
@@ -171,6 +172,7 @@ public class PlanEstudioRepositorio(ContextDB db) : IPlanDeEstudioRepositorio
         => await db.PlanEstudios
             .AsNoTracking()
             .Include(p => p.Carrera)
+            .Include(p => p.NivelAcademico) // --> CAMBIO: Incluir Nivel Académico
             .FirstOrDefaultAsync(p => p.IdPlanEstudio == idPlanEstudio);
 
     public async Task<IEnumerable<E_PlanEstudio>> ListarPlanesEstudio(string? criterioBusqueda = null)
@@ -178,6 +180,7 @@ public class PlanEstudioRepositorio(ContextDB db) : IPlanDeEstudioRepositorio
         var q = db.PlanEstudios
             .AsNoTracking()
             .Include(p => p.Carrera)
+            .Include(p => p.NivelAcademico) // --> CAMBIO: Incluir Nivel Académico
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(criterioBusqueda))
@@ -185,7 +188,8 @@ public class PlanEstudioRepositorio(ContextDB db) : IPlanDeEstudioRepositorio
             var term = criterioBusqueda.Trim();
             q = q.Where(p =>
                 EF.Functions.Like(p.PlanEstudio, $"%{term}%") ||
-                EF.Functions.Like(p.Carrera.NombreCarrera, $"%{term}%"));
+                EF.Functions.Like(p.Carrera.NombreCarrera, $"%{term}%") ||
+                EF.Functions.Like(p.NivelAcademico.NombreNivelAcademico, $"%{term}%")); // --> CAMBIO: Incluir búsqueda por nivel
         }
 
         return await q.ToListAsync();
@@ -194,6 +198,7 @@ public class PlanEstudioRepositorio(ContextDB db) : IPlanDeEstudioRepositorio
     public async Task<IEnumerable<E_PlanEstudio>> ListarPlanesPorCarrera(int idCarrera)
         => await db.PlanEstudios
             .AsNoTracking()
+            .Include(p => p.NivelAcademico) // --> CAMBIO: Incluir Nivel Académico para mostrarlo en la lista
             .Where(p => p.IdCarrera == idCarrera)
             .ToListAsync();
 

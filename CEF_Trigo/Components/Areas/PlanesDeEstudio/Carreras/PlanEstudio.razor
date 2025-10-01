@@ -1,0 +1,320 @@
+﻿@page "/plan-estudio"
+@rendermode InteractiveServer
+
+@using Entidades.DTO.PlanesDeEstudio.PlanEstudios
+@using Entidades.DTO.PlanesDeEstudio.Carreras
+@using Entidades.Generales
+@using Servicios.IRepositorios.PlanesDeEstudio
+
+@inject IPlanEstudioServicios PlanEstudioServicios
+@inject ICarreraServicios CarreraServicios
+
+<div class="container-fluid mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- SECCIÓN IZQUIERDA: BOTÓN DE VOLVER Y TÍTULO -->
+                <div class="d-flex align-items-center gap-3">
+                    <a href="/" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-left-circle me-1"></i>
+                        Volver al Inicio
+                    </a>
+                    <h3 class="mb-0"><i class="bi bi-collection me-2"></i>Gestión de Planes de Estudio</h3>
+                </div>
+                <!-- SECCIÓN DERECHA: BOTÓN DE NUEVO PLAN -->
+                <button class="btn btn-primary" @onclick="AbrirModalNuevo">
+                    <i class="bi bi-plus-circle-fill me-2"></i>
+                    Nuevo Plan de Estudio
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Barra de Búsqueda -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Buscar por nombre del plan..."
+                               @bind="criterioBusqueda" @bind:event="oninput" @onkeyup="Buscar" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Planes de Estudio -->
+            @if (planesEstudio == null)
+            {
+                <div class="text-center"><p>Cargando planes de estudio...</p></div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre del Plan</th>
+                                <th>Carrera</th>
+                                <th class="text-center">Total Créditos</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var plan in planesEstudio)
+                            {
+                                <tr>
+                                    <td>@plan.PlanEstudio</td>
+                                    <td>@(carreras?.FirstOrDefault(c => c.IdCarrera == plan.IdCarrera)?.NombreCarrera ?? "N/A")</td>
+                                    <td class="text-center">@plan.TotalCreditos</td>
+                                    <td class="text-center">
+                                        <span class="badge @(plan.EstadoPlanEstudio ? "bg-success" : "bg-danger")">
+                                            @(plan.EstadoPlanEstudio ? "Activo" : "Inactivo")
+                                        </span>
+                                    </td>
+                                    <td class="text-center actions-column">
+                                        <button class="btn btn-sm btn-outline-primary" @onclick="() => AbrirModalEditar(plan)">
+                                            <i class="bi bi-pencil-square"></i> Editar
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" @onclick="() => AbrirModalConfirmacion(plan)">
+                                            <i class="bi bi-trash3"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edición/Creación -->
+@if (mostrandoModal)
+{
+    <div class="modal fade show" tabindex="-1" style="display: block;">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@tituloModal</h5>
+                    <button type="button" class="btn-close" @onclick="CerrarModal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="carrera" class="form-label">Carrera</label>
+                            <select id="carrera" class="form-select" @bind="planSeleccionado.IdCarrera">
+                                <option value="0">Seleccione una carrera...</option>
+                                @if (carreras != null)
+                                {
+                                    @foreach (var carrera in carreras)
+                                    {
+                                        <option value="@carrera.IdCarrera">@carrera.NombreCarrera</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="nombrePlan" class="form-label">Nombre del Plan</label>
+                            <input id="nombrePlan" class="form-control" @bind="planSeleccionado.PlanEstudio" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="totalCreditos" class="form-label">Total Créditos</label>
+                            <input type="number" id="totalCreditos" class="form-control" @bind="planSeleccionado.TotalCreditos" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="creditosObligatorios" class="form-label">Créditos Obligatorios</label>
+                            <input type="number" id="creditosObligatorios" class="form-control" @bind="planSeleccionado.CreditosObligatorios" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="creditosOptativos" class="form-label">Créditos Optativos</label>
+                            <input type="number" id="creditosOptativos" class="form-control" @bind="planSeleccionado.CreditosOptativos" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="perfilIngreso" class="form-label">Perfil de Ingreso</label>
+                        <textarea id="perfilIngreso" class="form-control" rows="2" @bind="planSeleccionado.PerfilDeIngreso"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="perfilEgreso" class="form-label">Perfil de Egreso</label>
+                        <textarea id="perfilEgreso" class="form-control" rows="2" @bind="planSeleccionado.PerfilDeEgreso"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="campoOcupacional" class="form-label">Campo Ocupacional</label>
+                        <textarea id="campoOcupacional" class="form-control" rows="2" @bind="planSeleccionado.CampoOcupacional"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comentarios" class="form-label">Comentarios (Opcional)</label>
+                        <textarea id="comentarios" class="form-control" rows="2" @bind="planSeleccionado.Comentarios"></textarea>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-md-6 mb-3">
+                            <label for="nivelAcademico" class="form-label">ID Nivel Académico</label>
+                            <input type="number"
+                                   id="nivelAcademico"
+                                   class="form-control"
+                                   @bind="planSeleccionado.IdPlanEstudio" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check form-switch mt-4">
+                                <input class="form-check-input" type="checkbox" role="switch" id="estadoSwitch" @bind="planSeleccionado.EstadoPlanEstudio">
+                                <label class="form-check-label" for="estadoSwitch">Plan Activo</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (errores.Any())
+                    {
+                        <div class="alert alert-danger mt-3">
+                            @foreach (var error in errores)
+                            {
+                                <p class="mb-0">@error</p>
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CerrarModal">Cancelar</button>
+                    <button type="button" class="btn btn-success" @onclick="GuardarCambios">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+<!-- Modal de Confirmación de Borrado -->
+@if (mostrandoModalConfirmacion)
+{
+    <div class="modal fade show" tabindex="-1" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" @onclick="CerrarModalConfirmacion"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro de que desea eliminar el plan de estudio: <strong>@planSeleccionado.PlanEstudio</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CerrarModalConfirmacion">Cancelar</button>
+                    <button type="button" class="btn btn-danger" @onclick="ConfirmarBorrado">Sí, Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+<!-- Cargar los iconos de Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+@code {
+    private List<PlanEstudioDTO>? planesEstudio;
+    private List<CarreraDTO>? carreras;
+    private string criterioBusqueda = string.Empty;
+    private PlanEstudioDTO planSeleccionado = new();
+
+    private bool mostrandoModal = false;
+    private bool mostrandoModalConfirmacion = false;
+    private string tituloModal = string.Empty;
+    private List<string> errores = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarPlanesEstudio();
+        await CargarCarreras();
+    }
+
+    private async Task CargarPlanesEstudio()
+    {
+        planesEstudio = (await PlanEstudioServicios.ListarPlanesEstudio(criterioBusqueda)).ToList();
+    }
+
+    private async Task CargarCarreras()
+    {
+        // Cargamos todas las carreras sin filtro para el dropdown
+        carreras = (await CarreraServicios.ListarCarreras()).ToList();
+    }
+
+    private async Task Buscar() => await CargarPlanesEstudio();
+
+    private void AbrirModalNuevo()
+    {
+        tituloModal = "Nuevo Plan de Estudio";
+        planSeleccionado = new PlanEstudioDTO
+        {
+            EstadoPlanEstudio = true,
+            // Pre-seleccionar la primera carrera de la lista si existe
+            IdCarrera = carreras?.FirstOrDefault()?.IdCarrera ?? 0
+        };
+        errores.Clear();
+        mostrandoModal = true;
+    }
+
+    private void AbrirModalEditar(PlanEstudioDTO plan)
+    {
+        tituloModal = "Editar Plan de Estudio";
+        // Clonamos el objeto para no modificar la lista directamente
+        planSeleccionado = new PlanEstudioDTO
+        {
+            IdPlanEstudio = plan.IdPlanEstudio,
+            IdCarrera = plan.IdCarrera,
+            PlanEstudio = plan.PlanEstudio,
+            TotalCreditos = plan.TotalCreditos,
+            CreditosOptativos = plan.CreditosOptativos,
+            CreditosObligatorios = plan.CreditosObligatorios,
+            PerfilDeIngreso = plan.PerfilDeIngreso,
+            PerfilDeEgreso = plan.PerfilDeEgreso,
+            CampoOcupacional = plan.CampoOcupacional,
+            Comentarios = plan.Comentarios,
+            EstadoPlanEstudio = plan.EstadoPlanEstudio,
+        };
+        errores.Clear();
+        mostrandoModal = true;
+    }
+
+    private void CerrarModal() => mostrandoModal = false;
+
+    private async Task GuardarCambios()
+    {
+        errores.Clear();
+        var resultado = planSeleccionado.IdPlanEstudio == 0
+            ? await PlanEstudioServicios.InsertarPlanEstudio(planSeleccionado)
+            : await PlanEstudioServicios.ModificarPlanEstudio(planSeleccionado);
+
+        if (resultado.Resultado)
+        {
+            CerrarModal();
+            await CargarPlanesEstudio();
+        }
+        else
+        {
+            errores = resultado.Mensajes;
+        }
+    }
+
+    private void AbrirModalConfirmacion(PlanEstudioDTO plan)
+    {
+        planSeleccionado = plan;
+        mostrandoModalConfirmacion = true;
+    }
+
+    private void CerrarModalConfirmacion() => mostrandoModalConfirmacion = false;
+
+    private async Task ConfirmarBorrado()
+    {
+        var resultado = await PlanEstudioServicios.BorrarPlanEstudio(planSeleccionado.IdPlanEstudio);
+        CerrarModalConfirmacion();
+        if (resultado.Resultado)
+        {
+            await CargarPlanesEstudio();
+        }
+        else
+        {
+            // Opcional: Mostrar los errores de borrado al usuario con un sistema de notificaciones
+            Console.WriteLine("Error al borrar: " + string.Join(", ", resultado.Mensajes));
+        }
+    }
+}

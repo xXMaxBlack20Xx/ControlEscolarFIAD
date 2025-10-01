@@ -13,6 +13,9 @@ public class E_PlanEstudio
     [Key]
     public int IdPlanEstudio { get; set; }
 
+    [Required]
+    public int IdNivelAcademico { get; set; }
+
     // Foreign Key
     [Required]
     public int IdCarrera { get; set; }
@@ -54,13 +57,12 @@ public class E_PlanEstudio
     [Required]
     public bool EstadoPlanEstudio { get; set; } = false;
 
-    [Required]
-    [Range(1, int.MaxValue, ErrorMessage = "Debe de ser minimo >= 1")]
-    public int IdNivelAcademico { get; set; }
-
     // Navegacion properties
     [ForeignKey(nameof(IdCarrera))]
     public E_Carrera Carrera { get; set; } = new E_Carrera();
+
+    [ForeignKey(nameof(IdNivelAcademico))]
+    public E_NivelAcademico NivelAcademico { get; set; } = new E_NivelAcademico();
 
     // Futura implementacion
     //public E_NivelAcademico NivelAcademico { get; set; }

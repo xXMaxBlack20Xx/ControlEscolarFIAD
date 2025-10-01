@@ -5,9 +5,13 @@ namespace Datos.IRepositorios.PlanesDeEstudio;
 
 public interface ICarreraRepositorios
 {
+    // CRUD
     Task<ResultadoAcciones> InsertarCarrera(E_Carrera carrera);
     Task<ResultadoAcciones> ModificarCarrera(E_Carrera carrera);
     Task<ResultadoAcciones> BorrarCarrera(int idCarrera);
+
+    // Busca una carrera por su ID e incluye la información de su Docente coordinador.
+    Task<E_Carrera?> BuscarCarreraConCoordinador(int idCarrera);
 
     Task<E_Carrera?> BuscarCarrera(int idCarrera);
 

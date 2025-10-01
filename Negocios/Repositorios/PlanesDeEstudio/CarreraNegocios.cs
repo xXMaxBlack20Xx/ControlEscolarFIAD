@@ -108,26 +108,30 @@ public class CarreraNegocios
     }
 
     // ============== VALIDACIONES DE NEGOCIO (CORREGIDAS) ==============
-
     public async Task<ResultadoAcciones> ValidarCarrera(E_Carrera carrera, bool esModificacion = false)
     {
         var resultado = new ResultadoAcciones { Resultado = true };
 
+        // Reglas básicas (sin BD)
         ValidarClaveCarrera(resultado, carrera.ClaveCarrera);
         ValidarNombreCarrera(resultado, carrera.NombreCarrera);
         ValidarAliasCarrera(resultado, carrera.AliasCarrera);
         if (!resultado.Resultado) return resultado;
 
+        // Reglas de unicidad (consultan BD)
         if (esModificacion)
         {
+            // --- CAMBIO AQUÍ: Se eliminó la validación de unicidad de la clave ---
             await ValidarUnicidadNombreCarrera(resultado, carrera.NombreCarrera, carrera.IdCarrera);
             await ValidarUnicidadAliasCarrera(resultado, carrera.AliasCarrera, carrera.IdCarrera);
         }
         else
         {
+            // --- CAMBIO AQUÍ: Se eliminó la validación de unicidad de la clave ---
             await ValidarUnicidadNombreCarrera(resultado, carrera.NombreCarrera);
             await ValidarUnicidadAliasCarrera(resultado, carrera.AliasCarrera);
         }
+
         resultado.Resultado = resultado.Mensajes.Count == 0;
         return resultado;
     }
@@ -148,6 +152,7 @@ public class CarreraNegocios
             res.Mensajes.Add("La clave de la carrera debe tener exactamente 3 letras (A–Z).");
         }
     }
+
     private static void ValidarNombreCarrera(ResultadoAcciones res, string? nombreCarrera)
     {
         if (string.IsNullOrWhiteSpace(nombreCarrera))
@@ -177,26 +182,20 @@ public class CarreraNegocios
         }
     }
 
-    // --------- reglas de unicidad (CORREGIDAS) ---------
-
+    // --------- reglas de unicidad ---------
     private async Task ValidarUnicidadNombreCarrera(ResultadoAcciones res, string? nombreCarrera, int? idExcluido = null)
     {
         if (string.IsNullOrWhiteSpace(nombreCarrera)) return;
-
         var nombre = nombreCarrera.Trim();
-        bool existe = await _carreraRepositorio.ExisteNombreCarrera(nombre); // Devuelve bool
-        if (!existe) return; // Si no existe, no hay nada más que validar.
+        bool existe = await _carreraRepositorio.ExisteNombreCarrera(nombre);
+        if (!existe) return;
 
-        // Si existe, debemos verificar si es el mismo registro que estamos editando.
         if (idExcluido.HasValue)
         {
             var actual = await _carreraRepositorio.BuscarCarrera(idExcluido.Value);
-            // Si el nombre encontrado pertenece al registro actual, no es un error.
             if (actual != null && string.Equals(actual.NombreCarrera?.Trim(), nombre, StringComparison.OrdinalIgnoreCase))
                 return;
         }
-
-        // Si llegamos aquí, significa que el nombre existe y pertenece a OTRO registro.
         res.Resultado = false;
         res.Mensajes.Add("El nombre de la carrera ya existe.");
     }
@@ -204,9 +203,8 @@ public class CarreraNegocios
     private async Task ValidarUnicidadAliasCarrera(ResultadoAcciones res, string? aliasCarrera, int? idExcluido = null)
     {
         if (string.IsNullOrWhiteSpace(aliasCarrera)) return;
-
         var alias = aliasCarrera.Trim();
-        bool existe = await _carreraRepositorio.ExisteAliasCarrera(alias); // Devuelve bool
+        bool existe = await _carreraRepositorio.ExisteAliasCarrera(alias);
         if (!existe) return;
 
         if (idExcluido.HasValue)
@@ -215,7 +213,6 @@ public class CarreraNegocios
             if (actual != null && string.Equals(actual.AliasCarrera?.Trim(), alias, StringComparison.OrdinalIgnoreCase))
                 return;
         }
-
         res.Resultado = false;
         res.Mensajes.Add("El alias de la carrera ya existe.");
     }

@@ -24,5 +24,10 @@ public class CarreraDTO
     [Range(1, int.MaxValue, ErrorMessage = "El Id de coordinador debe ser un entero positivo.")]
     public int? IdCoordinador { get; set; }
 
+    // --- Propiedad Añadida ---
+    // Esta propiedad es de solo lectura en la UI. Se usará para mostrar
+    // el nombre del coordinador asociado al IdCoordinador.
+    public string? NombreCoordinador { get; set; }
+
     public bool EstadoCarrera { get; set; } = true;
 }
