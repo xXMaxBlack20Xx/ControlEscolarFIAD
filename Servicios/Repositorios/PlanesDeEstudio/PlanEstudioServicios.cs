@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Entidades.DTO.PlanesDeEstudio.PlanEstudios;
 using Entidades.Generales;
-using Entidades.Modelos.PlanesDeEstudio.Carreras;
+using Entidades.Modelos.PlanesDeEstudio.PlanEstudios;
 using Negocios.Repositorios.PlanesDeEstudio;
 using Servicios.IRepositorios.PlanesDeEstudio;
 

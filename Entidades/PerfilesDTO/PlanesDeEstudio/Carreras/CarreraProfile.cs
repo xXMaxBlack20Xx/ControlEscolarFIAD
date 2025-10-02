@@ -19,7 +19,7 @@ using AutoMapper;
 using Entidades.DTO.PlanesDeEstudio.Carreras;
 using Entidades.Modelos.PlanesDeEstudio.Carreras;
 
-namespace Entidades.PerfilesDTO.PlanesDeEstudio;
+namespace Entidades.PerfilesDTO.PlanesDeEstudio.Carreras;
 
 public class CarreraProfile : Profile
 {
@@ -33,12 +33,12 @@ public class CarreraProfile : Profile
                 opt => opt.MapFrom(src => src.Coordinador != null
                     ? $"{src.Coordinador.NombreDocente} {src.Coordinador.PaternoDocente} {src.Coordinador.MaternoDocente}".Trim()
                     : "No asignado")
-            )
-            .ReverseMap() // Habilita el mapeo de DTO a Entidad
+            );
+
+        CreateMap<CarreraDTO, E_Carrera>()
             .ForMember(dest => dest.IdCarrera, opt => opt.Ignore()) // Ignora el ID al crear/actualizar
             .ForMember(dest => dest.Coordinador, opt => opt.Ignore()) // Ignora el objeto de navegación
             .ForMember(dest => dest.PlanEstudios, opt => opt.Ignore()) // Ignora la colección de navegación
-
             // Sanitización de datos al mapear de DTO a Entidad
             .AfterMap((src, dest) =>
             {

@@ -2,7 +2,7 @@
     Aqui haremos las configuracion de E_PlanDeEstudio  con Fluent API y EF Core
 */
 
-using Entidades.Modelos.PlanesDeEstudio.Carreras;
+using Entidades.Modelos.PlanesDeEstudio.PlanEstudios;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

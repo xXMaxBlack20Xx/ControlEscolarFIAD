@@ -1,7 +1,7 @@
 ﻿using Datos.IRepositorios.PlanesDeEstudio;
 using Datos.Repositorios.PlanesDeEstudio;
 using Entidades.Generales;
-using Entidades.Modelos.PlanesDeEstudio.Carreras;
+using Entidades.Modelos.PlanesDeEstudio.PlanEstudios;
 
 namespace Negocios.Repositorios.PlanesDeEstudio;
 

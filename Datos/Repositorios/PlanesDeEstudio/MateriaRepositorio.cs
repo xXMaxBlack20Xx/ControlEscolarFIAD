@@ -1,7 +1,7 @@
 ﻿using Datos.Contexto;
 using Datos.IRepositorios.PlanesDeEstudio;
 using Entidades.Generales;
-using Entidades.Modelos.PlanesDeEstudio.Carreras;
+using Entidades.Modelos.PlanesDeEstudio.Materias;
 using Microsoft.EntityFrameworkCore;
 
 namespace Datos.Repositorios.PlanesDeEstudio;

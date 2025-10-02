@@ -1,4 +1,4 @@
-﻿using Entidades.Modelos.PlanesDeEstudio.Carreras;
+﻿using Entidades.Modelos.PlanesDeEstudio.Docentes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -4,37 +4,27 @@
     1:N (Osea de uno a muchos)
 */
 
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Entidades.Modelos.PlanesDeEstudio.Docentes;
+using Entidades.Modelos.PlanesDeEstudio.PlanEstudios;
 
 namespace Entidades.Modelos.PlanesDeEstudio.Carreras;
 
 public class E_Carrera
 {
-    [Key]
     public int IdCarrera { get; set; }
 
-    [Required]
-    [MaxLength(3)]
     public string ClaveCarrera { get; set; } = string.Empty;
 
-    [Required]
-    [MaxLength(50)]
     public string NombreCarrera { get; set; } = string.Empty;
 
-    [Required]
-    [MaxLength(50)]
     public string AliasCarrera { get; set; } = string.Empty;
 
-    [Required]
     public int? IdCoordinador { get; set; }
 
-    [Required]
     public bool EstadoCarrera { get; set; } = true;
 
-    [ForeignKey(nameof(IdCoordinador))]
     public E_Docentes? Coordinador { get; set; }
-  
-    // Navigation
-    public ICollection<E_PlanEstudio> PlanEstudios { get; set; } = new List<E_PlanEstudio>();
+
+    // Propiedad de navegación para la relación 1:N con PlanEstudio
+    public ICollection<E_PlanEstudio> PlanEstudios { get; set; } = [];
 }

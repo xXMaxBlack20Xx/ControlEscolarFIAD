@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Entidades.DTO.PlanesDeEstudio.PlanEstudios;
-using Entidades.Modelos.PlanesDeEstudio.Carreras;
+using Entidades.Modelos.PlanesDeEstudio.PlanEstudios;
 
 namespace Entidades.PerfilesDTO.PlanesDeEstudio;
 

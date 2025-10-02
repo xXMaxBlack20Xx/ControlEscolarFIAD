@@ -4,9 +4,11 @@ namespace Entidades.DTO.PlanesDeEstudio.Carreras;
 
 public class CarreraDTO
 {
+    [Key]
     public int IdCarrera { get; set; }
 
     [Required(ErrorMessage = "Debe capturar la clave de la carrera.")]
+    [StringLength(3, ErrorMessage = "La clave debe tener exactamente 3 caracteres.")]
     [RegularExpression(@"^[A-Z]{3}$", ErrorMessage = "La clave debe tener exactamente 3 letras mayúsculas (A–Z).")]
     public string ClaveCarrera { get; set; } = string.Empty;
 
@@ -24,10 +26,10 @@ public class CarreraDTO
     [Range(1, int.MaxValue, ErrorMessage = "El Id de coordinador debe ser un entero positivo.")]
     public int? IdCoordinador { get; set; }
 
+    public bool EstadoCarrera { get; set; } = true;
+
     // --- Propiedad Añadida ---
     // Esta propiedad es de solo lectura en la UI. Se usará para mostrar
     // el nombre del coordinador asociado al IdCoordinador.
     public string? NombreCoordinador { get; set; }
-
-    public bool EstadoCarrera { get; set; } = true;
 }

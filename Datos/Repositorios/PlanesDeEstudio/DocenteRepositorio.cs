@@ -1,7 +1,7 @@
 ﻿using Datos.Contexto;
 using Datos.IRepositorios.PlanesDeEstudio;
 using Entidades.Generales;
-using Entidades.Modelos.PlanesDeEstudio.Carreras;
+using Entidades.Modelos.PlanesDeEstudio.Docentes;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 

@@ -1,5 +1,10 @@
 ﻿using Entidades.Modelos;
 using Entidades.Modelos.PlanesDeEstudio.Carreras;
+using Entidades.Modelos.PlanesDeEstudio.Docentes;
+using Entidades.Modelos.PlanesDeEstudio.Materias;
+using Entidades.Modelos.PlanesDeEstudio.NivelesAcademicos;
+using Entidades.Modelos.PlanesDeEstudio.PlanEstudioMaterias;
+using Entidades.Modelos.PlanesDeEstudio.PlanEstudios;
 using Microsoft.EntityFrameworkCore;
 
 namespace Datos.Contexto;

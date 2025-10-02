@@ -1,6 +1,4 @@
-﻿
-
-using Entidades.Modelos.PlanesDeEstudio.Carreras;
+﻿using Entidades.Modelos.PlanesDeEstudio.NivelesAcademicos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,5 +1,5 @@
 ﻿using Entidades.Generales;
-using Entidades.Modelos.PlanesDeEstudio.Carreras;
+using Entidades.Modelos.PlanesDeEstudio.NivelesAcademicos;
 
 namespace Datos.IRepositorios.PlanesDeEstudio;
 

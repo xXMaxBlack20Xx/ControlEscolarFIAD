@@ -5,6 +5,7 @@ using Datos.IRepositorios.PlanesDeEstudio;
 using Datos.Repositorios;
 using Datos.Repositorios.PlanesDeEstudio;
 using Entidades.PerfilesDTO;
+using Entidades.PerfilesDTO.PlanesDeEstudio.Carreras;
 using Microsoft.EntityFrameworkCore;
 using Negocios;
 using Servicios.IRepositorios;
@@ -27,7 +28,7 @@ namespace CEF_Trigo
             builder.Services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<PruebaProfile>();
-                cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.CarreraProfile>();
+                cfg.AddProfile<CarreraProfile>();
                 cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.PlanEstudiosProfile>();
                 cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.DocenteProfile>();
                 cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.NivelAcademicoProfile>();

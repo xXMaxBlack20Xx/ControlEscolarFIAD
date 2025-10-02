@@ -3,10 +3,11 @@
 */
 
 using Entidades.Modelos.PlanesDeEstudio.Carreras;
+using Entidades.Modelos.PlanesDeEstudio.Docentes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Entidades.Configuraciones.PlanesDeEstudio;
+namespace Entidades.Configuraciones.PlanesDeEstudio.Carreras;
 
 public class CarreraConfiguration : IEntityTypeConfiguration<E_Carrera>
 {
@@ -39,7 +40,7 @@ public class CarreraConfiguration : IEntityTypeConfiguration<E_Carrera>
 
         // Definición de la relación 1 a N con Docentes
         // Una Carrera TIENE UN Coordinador (que es un Docente)
-        builder.HasOne<E_Docentes>(carrera => carrera.Coordinador)
+        builder.HasOne(carrera => carrera.Coordinador)
                // Un Docente PUEDE TENER MUCHAS CarrerasCoordinadas
                .WithMany(docente => docente.CarrerasCoordinadas)
                // La llave foránea en la tabla Carreras es IdCoordinador

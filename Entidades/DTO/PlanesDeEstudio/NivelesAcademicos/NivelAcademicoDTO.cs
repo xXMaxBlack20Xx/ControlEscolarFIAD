@@ -4,6 +4,7 @@ namespace Entidades.DTO.PlanesDeEstudio.NivelesAcademicos;
 
 public class NivelAcademicoDTO
 {
+    [Key]
     public int IdNivelAcademico { get; set; }
 
     [Required(ErrorMessage = "Debe capturar el nombre del nivel académico.")]

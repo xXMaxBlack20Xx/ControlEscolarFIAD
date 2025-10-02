@@ -4,6 +4,9 @@ namespace Entidades.DTO.PlanesDeEstudio.Materias;
 
 public class MateriaDTO
 {
+    [Key]
+    public int IdMateria { get; set; }
+
     [Required(ErrorMessage = "La clave de la materia es obligatoria.")]
     [StringLength(6, MinimumLength = 6, ErrorMessage = "La clave debe tener exactamente 6 caracteres.")]
     public string ClaveMateria { get; set; } = string.Empty;
@@ -75,6 +78,7 @@ public class MateriaDTO
     [StringLength(256, ErrorMessage = "La ruta del archivo PUA no debe exceder los 256 caracteres.")]
     public string? PathPUA { get; set; }
 
+    [Required(ErrorMessage = "El estado es obligatorio")]
     public bool EstadoMateria { get; set; } = true;
 
     /// <summary>

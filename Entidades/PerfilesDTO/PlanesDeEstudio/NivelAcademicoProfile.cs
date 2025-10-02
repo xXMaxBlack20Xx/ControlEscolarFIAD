@@ -1,7 +1,7 @@
 ﻿
 using AutoMapper;
 using Entidades.DTO.PlanesDeEstudio.NivelesAcademicos;
-using Entidades.Modelos.PlanesDeEstudio.Carreras;
+using Entidades.Modelos.PlanesDeEstudio.NivelesAcademicos;
 
 namespace Entidades.PerfilesDTO.PlanesDeEstudio;
 

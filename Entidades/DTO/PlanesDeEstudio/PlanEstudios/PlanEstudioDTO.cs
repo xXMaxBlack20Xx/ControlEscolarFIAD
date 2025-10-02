@@ -9,16 +9,18 @@ namespace Entidades.DTO.PlanesDeEstudio.PlanEstudios;
 
 public class PlanEstudioDTO : IValidatableObject
 {
+    [Key]
     public int IdPlanEstudio { get; set; }
 
     // --- SECCIÓN DE LLAVES FORÁNEAS Y NOMBRES PARA VISUALIZACIÓN ---
-    [Required(ErrorMessage = "Seleccione una carrera.")]
-    [Range(1, int.MaxValue, ErrorMessage = "Seleccione una carrera válida.")]
-    public int IdCarrera { get; set; }
-
+    
     [Required(ErrorMessage = "Seleccione un nivel académico.")]
     [Range(1, int.MaxValue, ErrorMessage = "Seleccione un nivel académico válido.")]
     public int IdNivelAcademico { get; set; }
+
+    [Required(ErrorMessage = "Seleccione una carrera.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Seleccione una carrera válida.")]
+    public int IdCarrera { get; set; }
 
     // Propiedades adicionales para mostrar en la UI, se llenan con AutoMapper.
     public string? NombreCarrera { get; set; }

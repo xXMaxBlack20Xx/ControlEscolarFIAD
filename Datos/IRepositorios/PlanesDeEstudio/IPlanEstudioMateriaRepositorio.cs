@@ -1,6 +1,6 @@
 ﻿
 using Entidades.Generales;
-using Entidades.Modelos.PlanesDeEstudio.Carreras;
+using Entidades.Modelos.PlanesDeEstudio.PlanEstudioMaterias;
 
 namespace Datos.IRepositorios.PlanesDeEstudio;
 

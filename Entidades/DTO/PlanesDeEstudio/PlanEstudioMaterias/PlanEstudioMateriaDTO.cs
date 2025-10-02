@@ -5,6 +5,7 @@ namespace Entidades.DTO.PlanesDeEstudio.PlanEstudioMaterias;
 
 public class PlanEstudioMateriaDTO
 {
+    [Key]
     public int IdPlanEstudioMateria { get; set; }
 
     [Required(ErrorMessage = "Debe proporcionar el ID del Plan de Estudio.")]

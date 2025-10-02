@@ -4,6 +4,7 @@ namespace Entidades.DTO.PlanesDeEstudio.Docentes;
 
 public class DocenteDTO
 {
+    [Key]
     public int? IdDocente { get; set; }
 
     [Required(ErrorMessage = "Debe capturar el número de empleado.")]
