@@ -31,6 +31,8 @@ namespace CEF_Trigo
                 cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.PlanEstudiosProfile>();
                 cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.DocenteProfile>();
                 cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.NivelAcademicoProfile>();
+                cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.MateriaProfile>();
+                cfg.AddProfile<Entidades.PerfilesDTO.PlanesDeEstudio.PlanEstudioMateriaProfile>();
             });
 
             // Agregar el repositorio al contenedor de servicios
@@ -45,6 +47,10 @@ namespace CEF_Trigo
             builder.Services.AddScoped<IPlanDeEstudioRepositorio, PlanEstudioRepositorio>();
             builder.Services.AddScoped<Negocios.Repositorios.PlanesDeEstudio.PlanEstudioNegocios>();
             builder.Services.AddScoped<Servicios.IRepositorios.PlanesDeEstudio.IPlanEstudioServicios, Servicios.Repositorios.PlanesDeEstudio.PlanEstudioServicios>();
+
+            builder.Services.AddScoped<IMateriaRepositorio, MateriaRepositorio>();
+
+            builder.Services.AddScoped<IPlanEstudioMateriaRepositorio, PlanEstudioMateriaRepositorio>();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()

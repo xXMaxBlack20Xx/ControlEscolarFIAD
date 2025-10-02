@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Entidades.Generales;
 
 public class ResultadoAcciones
@@ -17,7 +12,7 @@ public class ResultadoAcciones
         return new ResultadoAcciones
         {
             Resultado = true,
-            Mensajes = new List<string> { mensaje }
+            Mensajes = [mensaje]
         };
     }
 
@@ -26,7 +21,7 @@ public class ResultadoAcciones
         return new ResultadoAcciones
         {
             Resultado = false,
-            Mensajes = new List<string> { mensaje }
+            Mensajes = [mensaje]
         };
     }
 }

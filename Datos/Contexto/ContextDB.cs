@@ -17,6 +17,10 @@ public class ContextDB(DbContextOptions<ContextDB> opt) : DbContext(opt)
 
     public DbSet<E_NivelAcademico> NivelesAcademicos => Set<E_NivelAcademico>();
 
+    public DbSet<E_Materias> Materias => Set<E_Materias>();
+
+    public DbSet<E_PlanEstudioMateria> PlanesEstudioMateria => Set<E_PlanEstudioMateria>();
+
     protected override void OnModelCreating(ModelBuilder mb)
     {
         base.OnModelCreating(mb);

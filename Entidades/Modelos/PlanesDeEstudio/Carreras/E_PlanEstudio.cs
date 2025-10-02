@@ -64,7 +64,7 @@ public class E_PlanEstudio
     [ForeignKey(nameof(IdNivelAcademico))]
     public E_NivelAcademico NivelAcademico { get; set; } = new E_NivelAcademico();
 
-    // Futura implementacion
-    //public E_NivelAcademico NivelAcademico { get; set; }
-    //public ICollection<E_PlanEstudioMateria>? PlanEstudioMaterias { get; set; }
+    // Colección para la relación muchos a muchos a través de la tabla intermedia
+    public ICollection<E_PlanEstudioMateria> PlanEstudioMaterias { get; set; } = [];
+
 }
